@@ -8,16 +8,17 @@
 
 <style>
   :root {
-    /* 배경 색 (업무 성격) — 파스텔 */
-    --bg-regular: #eceef1;   /* 정규 업무 · 회색 */
-    --bg-deadline: #fcdce7;  /* 마감 시각 정해진 업무 · 분홍 */
-    --bg-before: #e0f0cd;    /* 퇴근 전에만 · 연두 */
-    --bg-optional: #d4e9f7;  /* 하면 좋고 · 하늘 */
+    /* 배경 색 (업무 성격) */
+    --bg-regular: #eceef1;   /* 정규 · 회색 */
+    --bg-deadline: #fcdce7;  /* 시간 제한 · 분홍 */
+    --bg-before: #e0f0cd;    /* 퇴근 전 · 연두 */
+    --bg-optional: #d4e9f7;  /* 선택 · 하늘 */
 
-    /* 테두리 색 (담당/강조) — 파스텔이지만 눈에 띄게 */
-    --bd-emphasis: #ef6a6a;  /* 강조 · 빨강 */
-    --bd-mine: #5b90e6;      /* 내가 해결 · 파랑 */
+    /* 테두리 색 (담당/강조) */
+    --bd-important: #ef6a6a; /* 중요 · 빨강 */
+    --bd-mine: #5b90e6;      /* 내 업무 · 파랑 */
     --bd-other: #e6bb35;     /* 타 부서 확인 · 노랑 */
+    --bd-otherdone: #a97ad0; /* 타 부서 시행 · 보라 */
     --bd-none: rgba(0,0,0,.12);
 
     --ink: #2c333b;
@@ -26,6 +27,7 @@
     --panel: #ffffff;
     --line: #e4e8ec;
     --accent: #6aa0d8;
+    --warn: #e6bb35;
 
     --card-w: 300px;
     --f-main: 9px;
@@ -45,131 +47,95 @@
   /* ── 헤더 ── */
   header {
     position: sticky; top: 0; z-index: 20;
-    display: flex; align-items: center; gap: 10px;
+    display: flex; align-items: center; gap: 8px;
     padding: 10px 14px;
     background: rgba(244,246,248,.92);
     backdrop-filter: blur(6px);
     border-bottom: 1px solid var(--line);
   }
-  header h1 { font-size: 15px; margin: 0; font-weight: 800; letter-spacing: -.3px; }
-  header .clock {
-    font-variant-numeric: tabular-nums;
-    font-size: 13px; font-weight: 700; color: var(--ink-soft);
-    margin-left: 2px;
-  }
+  header h1 { font-size: 15px; margin: 0; font-weight: 800; letter-spacing: -.3px; white-space: nowrap; }
+  header .clock { font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 700; color: var(--ink-soft); }
   header .spacer { flex: 1; }
   .btn {
     font-family: inherit; font-size: 12px; font-weight: 700;
     border: 1px solid var(--line); background: var(--panel); color: var(--ink);
-    padding: 7px 12px; border-radius: 9px; cursor: pointer;
+    padding: 7px 11px; border-radius: 9px; cursor: pointer; white-space: nowrap;
     transition: transform .06s, background .15s, box-shadow .15s;
   }
   .btn:active { transform: translateY(1px); }
   .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(106,160,216,.35); }
   .btn.ghost { background: transparent; }
-  #installBtn { display: none; }
+  .btn.warn { background: #fff6da; border-color: var(--warn); color: #8a6d00; }
+  #installBtn, #autoSortBtn { display: none; }
 
   /* ── 입력 패널 ── */
-  #panel {
-    max-width: 640px; margin: 12px auto 0; padding: 0 14px;
-    overflow: hidden; max-height: 0; transition: max-height .3s ease;
-  }
-  #panel.open { max-height: 640px; }
-  .form {
-    background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
-    padding: 14px; display: grid; gap: 10px;
-    box-shadow: 0 6px 20px rgba(40,55,75,.06);
-  }
+  #panel { max-width: 640px; margin: 12px auto 0; padding: 0 14px; overflow: hidden; max-height: 0; transition: max-height .3s ease; }
+  #panel.open { max-height: 900px; }
+  .form { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; box-shadow: 0 6px 20px rgba(40,55,75,.06); }
   .row { display: grid; gap: 8px; }
   .row.two { grid-template-columns: 1fr 1fr; }
-  .row.three { grid-template-columns: 1.2fr 1fr auto; }
   label { font-size: 10px; font-weight: 700; color: var(--ink-soft); display: block; margin-bottom: 4px; }
-  input, textarea, select {
-    width: 100%; font-family: inherit; font-size: 12px; color: var(--ink);
-    border: 1px solid var(--line); border-radius: 9px; padding: 8px 9px;
-    background: #fbfcfd; outline: none;
-  }
+  input, textarea, select { width: 100%; font-family: inherit; font-size: 12px; color: var(--ink); border: 1px solid var(--line); border-radius: 9px; padding: 8px 9px; background: #fbfcfd; outline: none; }
   input:focus, textarea:focus, select:focus { border-color: var(--accent); background: #fff; }
   textarea { resize: vertical; min-height: 46px; }
 
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-  .chip {
-    font-size: 11px; font-weight: 700; cursor: pointer; user-select: none;
-    padding: 6px 10px; border-radius: 20px; border: 2px solid transparent;
-    display: inline-flex; align-items: center; gap: 5px;
-  }
+  .chip { font-size: 11px; font-weight: 700; cursor: pointer; user-select: none; padding: 6px 10px; border-radius: 20px; border: 2px solid transparent; display: inline-flex; align-items: center; gap: 5px; background: #f1f4f7; color: var(--ink-soft); }
   .chip .dot { width: 11px; height: 11px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
-  .chip[data-group="bg"] { background: #f1f4f7; color: var(--ink-soft); }
   .chip[data-group="bg"].sel { color: var(--ink); box-shadow: 0 0 0 2px var(--accent) inset; }
-  .chip[data-group="bd"] { background: #f1f4f7; color: var(--ink-soft); }
   .chip[data-group="bd"].sel { color: var(--ink); box-shadow: 0 0 0 2px var(--ink) inset; }
+  .acheck { font-size: 11px; font-weight: 700; color: var(--ink-soft); background: #f1f4f7; border-radius: 20px; padding: 5px 10px; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; }
+  .acheck input { width: auto; margin: 0; accent-color: var(--accent); }
 
   .form-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 2px; }
 
   /* ── 보드 ── */
-  #board {
-    display: flex; flex-wrap: wrap; gap: 12px; justify-content: center;
-    padding: 16px 14px; align-items: flex-start;
-  }
+  #board { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; padding: 16px 14px; align-items: flex-start; }
   .empty { color: var(--ink-soft); text-align: center; margin: 60px auto; font-size: 13px; }
   .empty .big { font-size: 34px; margin-bottom: 8px; }
 
   /* ── 업무 카드 ── */
-  .card {
-    width: var(--card-w); border-radius: 12px; padding: 10px 11px 11px;
-    border: 2.5px solid var(--bd-none);
-    box-shadow: 0 3px 10px rgba(40,55,75,.08);
-    position: relative; overflow: hidden;
-  }
+  .card { width: var(--card-w); border-radius: 12px; padding: 10px 11px 11px; border: 2.5px solid var(--bd-none); box-shadow: 0 3px 10px rgba(40,55,75,.08); position: relative; overflow: hidden; cursor: grab; }
   .card.bg-regular  { background: var(--bg-regular); }
   .card.bg-deadline { background: var(--bg-deadline); }
   .card.bg-before   { background: var(--bg-before); }
   .card.bg-optional { background: var(--bg-optional); }
-  .card.bd-emphasis { border-color: var(--bd-emphasis); }
-  .card.bd-mine     { border-color: var(--bd-mine); }
-  .card.bd-other    { border-color: var(--bd-other); }
+  .card.bd-important { border-color: var(--bd-important); }
+  .card.bd-mine      { border-color: var(--bd-mine); }
+  .card.bd-other     { border-color: var(--bd-other); }
+  .card.bd-otherdone { border-color: var(--bd-otherdone); }
 
   .card .head { display: flex; align-items: flex-start; gap: 6px; }
   .card .title { font-size: var(--f-title); font-weight: 800; line-height: 1.25; letter-spacing: -.3px; flex: 1; }
-  .card.bd-emphasis .title { font-size: 15px; color: #b83232; }
-  .card .patient {
-    font-size: 10px; font-weight: 800; color: var(--ink);
-    background: rgba(255,255,255,.65); border-radius: 6px;
-    padding: 2px 6px; margin-top: 5px; display: inline-block;
-  }
+  .card.bd-important .title { font-size: 15px; color: #b83232; }
+  .card .patient { font-size: 10px; font-weight: 800; color: var(--ink); background: rgba(255,255,255,.65); border-radius: 6px; padding: 2px 6px; margin-top: 5px; display: inline-block; }
   .card .content { font-size: var(--f-main); color: var(--ink-soft); margin-top: 6px; line-height: 1.45; white-space: pre-wrap; }
 
   .card .foot { display: flex; align-items: center; gap: 6px; margin-top: 9px; }
-  .badge {
-    font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 6px;
-    background: rgba(255,255,255,.7); color: var(--ink); font-variant-numeric: tabular-nums;
-  }
+  .badge { font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 6px; background: rgba(255,255,255,.7); color: var(--ink); font-variant-numeric: tabular-nums; }
   .badge.soon { background: #fff3cd; color: #8a6d00; }
   .badge.overdue { background: #ffd9d9; color: #b12626; }
   .foot .grow { flex: 1; }
-  .iconbtn {
-    border: none; background: rgba(255,255,255,.6); cursor: pointer;
-    width: 26px; height: 26px; border-radius: 7px; font-size: 13px; line-height: 1;
-    display: grid; place-items: center; color: var(--ink-soft);
-  }
+  .iconbtn { border: none; background: rgba(255,255,255,.6); cursor: pointer; width: 26px; height: 26px; border-radius: 7px; font-size: 13px; line-height: 1; display: grid; place-items: center; color: var(--ink-soft); }
   .iconbtn:active { transform: translateY(1px); }
   .iconbtn.done { color: #2f8f4e; }
 
-  /* 담당 표시 좌측 리본 */
-  .card .ribbon {
-    position: absolute; top: 8px; right: -26px; transform: rotate(45deg);
-    font-size: 9px; font-weight: 800; color: #fff; padding: 2px 26px;
-  }
+  /* 담당 표시 리본 */
+  .card .ribbon { position: absolute; top: 8px; right: -26px; transform: rotate(45deg); font-size: 9px; font-weight: 800; color: #fff; padding: 2px 26px; display: none; }
+  .card.bd-important .ribbon { background: var(--bd-important); display: block; }
   .card.bd-mine .ribbon { background: var(--bd-mine); display: block; }
   .card.bd-other .ribbon { background: var(--bd-other); color: #5c4b00; display: block; }
-  .card.bd-emphasis .ribbon { background: var(--bd-emphasis); display: block; }
-  .card .ribbon { display: none; }
+  .card.bd-otherdone .ribbon { background: var(--bd-otherdone); display: block; }
 
-  /* 마감 임박 강조 */
-  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(239,106,106,.0); } 50% { box-shadow: 0 0 0 5px rgba(239,106,106,.28); } }
-  .card.alert { animation: pulse 1.4s infinite; }
+  /* 알림 깜빡임 */
+  @keyframes alarmblink {
+    0%,100% { box-shadow: 0 3px 10px rgba(40,55,75,.08); }
+    50% { box-shadow: 0 0 0 4px rgba(230,187,53,.9), 0 4px 16px rgba(230,187,53,.55); background-image: linear-gradient(rgba(255,241,179,.55), rgba(255,241,179,.55)); }
+  }
+  .card.alarming { animation: alarmblink 1s infinite; }
+  .card .alarmtag { font-size: 10px; font-weight: 800; color: #8a6d00; background: #fff2c2; padding: 3px 7px; border-radius: 6px; }
 
-  /* 완료 */
+  .card.dragging { opacity: .45; transform: scale(.98); cursor: grabbing; }
   .card.done { opacity: .5; }
   .card.done .title { text-decoration: line-through; }
 
@@ -180,6 +146,7 @@
   <h1>병동 리마인더</h1>
   <span class="clock" id="clock">--:--</span>
   <span class="spacer"></span>
+  <button class="btn warn" id="autoSortBtn">자동정렬</button>
   <button class="btn ghost" id="installBtn">설치</button>
   <button class="btn primary" id="addBtn">+ 업무</button>
 </header>
@@ -187,47 +154,31 @@
 <section id="panel">
   <form class="form" id="form" autocomplete="off">
     <div class="row">
-      <div>
-        <label>제목</label>
-        <input id="f-title" required maxlength="40" placeholder="" />
-      </div>
+      <div><label>제목</label><input id="f-title" required maxlength="40" /></div>
     </div>
     <div class="row two">
-      <div>
-        <label>병실</label>
-        <input id="f-room" maxlength="20" />
-      </div>
-      <div>
-        <label>이름</label>
-        <input id="f-name" maxlength="20" />
-      </div>
+      <div><label>병실</label><input id="f-room" maxlength="20" /></div>
+      <div><label>이름</label><input id="f-name" maxlength="20" /></div>
     </div>
     <div class="row two">
-      <div>
-        <label>마감 시간</label>
-        <input id="f-time" type="time" />
-      </div>
-      <div>
-        <label>완료 체크</label>
+      <div><label>마감 시간</label><input id="f-time" type="time" /></div>
+      <div><label>반복</label>
         <select id="f-repeat">
           <option value="0">한 번</option>
-          <option value="60">1시간마다 반복</option>
-          <option value="120">2시간마다 반복</option>
-          <option value="240">4시간마다 반복</option>
+          <option value="60">1시간마다</option>
+          <option value="120">2시간마다</option>
+          <option value="240">4시간마다</option>
         </select>
       </div>
     </div>
     <div class="row">
-      <div>
-        <label>내용</label>
-        <textarea id="f-content" maxlength="200"></textarea>
-      </div>
+      <div><label>내용</label><textarea id="f-content" maxlength="200"></textarea></div>
     </div>
     <div class="row">
       <label>배경 · 업무 성격</label>
       <div class="chips" id="bgChips">
         <span class="chip sel" data-group="bg" data-val="regular"><span class="dot" style="background:var(--bg-regular)"></span>정규</span>
-        <span class="chip" data-group="bg" data-val="deadline"><span class="dot" style="background:var(--bg-deadline)"></span>마감</span>
+        <span class="chip" data-group="bg" data-val="deadline"><span class="dot" style="background:var(--bg-deadline)"></span>시간 제한</span>
         <span class="chip" data-group="bg" data-val="before"><span class="dot" style="background:var(--bg-before)"></span>퇴근 전</span>
         <span class="chip" data-group="bg" data-val="optional"><span class="dot" style="background:var(--bg-optional)"></span>선택</span>
       </div>
@@ -236,9 +187,19 @@
       <label>테두리 · 담당 / 강조</label>
       <div class="chips" id="bdChips">
         <span class="chip sel" data-group="bd" data-val="none"><span class="dot" style="background:var(--bd-none)"></span>없음</span>
-        <span class="chip" data-group="bd" data-val="emphasis"><span class="dot" style="background:var(--bd-emphasis)"></span>강조</span>
+        <span class="chip" data-group="bd" data-val="important"><span class="dot" style="background:var(--bd-important)"></span>중요</span>
         <span class="chip" data-group="bd" data-val="mine"><span class="dot" style="background:var(--bd-mine)"></span>내 업무</span>
-        <span class="chip" data-group="bd" data-val="other"><span class="dot" style="background:var(--bd-other)"></span>타 부서</span>
+        <span class="chip" data-group="bd" data-val="other"><span class="dot" style="background:var(--bd-other)"></span>타 부서 확인</span>
+        <span class="chip" data-group="bd" data-val="otherdone"><span class="dot" style="background:var(--bd-otherdone)"></span>타 부서 시행</span>
+      </div>
+    </div>
+    <div class="row">
+      <label>알림 · 시간 제한 업무 (마감 전)</label>
+      <div class="chips" id="alarmChips">
+        <label class="acheck"><input type="checkbox" value="60" checked>1시간</label>
+        <label class="acheck"><input type="checkbox" value="30" checked>30분</label>
+        <label class="acheck"><input type="checkbox" value="10" checked>10분</label>
+        <label class="acheck"><input type="checkbox" value="5" checked>5분</label>
       </div>
     </div>
     <div class="form-actions">
@@ -249,134 +210,217 @@
 </section>
 
 <main id="board"></main>
-<footer>병동 업무 리마인더 · 오프라인 저장</footer>
+<footer>병동 업무 리마인더 · 카드 클릭 = 알림 해제 · 드래그로 순서 변경</footer>
 
 <script>
 (() => {
   "use strict";
   const KEY = "ward-tasks-v1";
+  const SORTKEY = "ward-sort-v1";
   const $ = (s, r=document) => r.querySelector(s);
-  const board = $("#board");
-  const form = $("#form");
-  const panel = $("#panel");
+  const board = $("#board"), form = $("#form"), panel = $("#panel");
+  const autoSortBtn = $("#autoSortBtn");
 
   let tasks = load();
   let editingId = null;
   let sel = { bg: "regular", bd: "none" };
+  let sortMode = "auto", manualOrder = [];
+  let swReg = null;
 
-  function load() {
-    try { return JSON.parse(localStorage.getItem(KEY)) || []; }
-    catch { return []; }
-  }
-  function save() { localStorage.setItem(KEY, JSON.stringify(tasks)); }
-  function uid() { return Date.now().toString(36) + Math.floor(Math.random()*1e4).toString(36); }
+  (function loadMeta(){ try { const m = JSON.parse(localStorage.getItem(SORTKEY)); if (m){ sortMode = m.mode || "auto"; manualOrder = m.order || []; } } catch {} })();
 
-  const BG_LABEL = { regular:"정규", deadline:"마감", before:"퇴근 전", optional:"선택" };
+  function load(){ try { return (JSON.parse(localStorage.getItem(KEY))||[]).map(migrate); } catch { return []; } }
+  function migrate(t){ if (t.bd === "emphasis") t.bd = "important"; if (!Array.isArray(t.fired)) t.fired = []; if (!Array.isArray(t.alarms)) t.alarms = []; return t; }
+  function save(){ localStorage.setItem(KEY, JSON.stringify(tasks)); }
+  function saveMeta(){ localStorage.setItem(SORTKEY, JSON.stringify({ mode: sortMode, order: manualOrder })); }
+  function uid(){ return Date.now().toString(36) + Math.floor(Math.random()*1e4).toString(36); }
 
-  /* 마감까지 남은 분 계산 (오늘 기준, 야간 근무 대비 12시간 넘게 지난 건 다음날로) */
-  function minutesLeft(time) {
-    if (!time) return null;
-    const [h, m] = time.split(":").map(Number);
-    const now = new Date();
-    let diff = (h*60 + m) - (now.getHours()*60 + now.getMinutes());
-    if (diff < -720) diff += 1440;
-    return diff;
-  }
+  const RIB = { important:"중요", mine:"내업무", other:"확인", otherdone:"시행" };
 
-  function fmtBadge(t) {
+  function toMin(t){ const [h,m] = t.split(":").map(Number); return h*60+m; }
+  function minutesLeft(time){ if (!time) return null; const now = new Date(); let d = toMin(time) - (now.getHours()*60+now.getMinutes()); if (d < -720) d += 1440; return d; }
+
+  function fmtBadge(t){
     const left = minutesLeft(t.time);
-    if (left === null) return { cls: "", text: "" };
-    if (t.done) return { cls: "", text: "마감 " + t.time };
-    if (left < 0) return { cls: "overdue", text: `${-left}분 지남` };
-    if (left <= 60) return { cls: "soon", text: `${left}분 남음` };
-    return { cls: "", text: "마감 " + t.time };
+    if (left === null) return { cls:"", text:"" };
+    if (t.done) return { cls:"", text:"마감 "+t.time };
+    if (left < 0) return { cls:"overdue", text:`${-left}분 지남` };
+    if (left <= 60) return { cls:"soon", text:`${left}분 남음` };
+    return { cls:"", text:"마감 "+t.time };
   }
 
-  function sortTasks(a, b) {
-    if (a.done !== b.done) return a.done ? 1 : -1;
-    const la = minutesLeft(a.time), lb = minutesLeft(b.time);
-    if (la === null && lb === null) return b.createdAt - a.createdAt;
-    if (la === null) return 1;
-    if (lb === null) return -1;
-    return la - lb;
-  }
-
-  function render() {
-    board.innerHTML = "";
-    if (!tasks.length) {
-      board.innerHTML = `<div class="empty"><div class="big">🩺</div>업무를 추가해 두세요.<br>근무 중 화면에 리마인드 됩니다.</div>`;
-      return;
+  /* ── 정렬 규칙 ── */
+  function autoCmp(a, b){
+    if (a.done !== b.done) return a.done ? 1 : -1;                    // 완료 맨 아래
+    const impA = a.bd==="important", impB = b.bd==="important";
+    if (impA !== impB) return impA ? -1 : 1;                          // 1순위 중요
+    const tlA = a.bg==="deadline", tlB = b.bg==="deadline";
+    if (tlA !== tlB) return tlA ? -1 : 1;                             // 2순위 시간 제한
+    if (tlA && tlB){
+      const hA = !!a.time, hB = !!b.time;
+      if (hA !== hB) return hA ? -1 : 1;                              // 시간 미설정은 후순위
+      if (a.time && b.time && a.time !== b.time) return toMin(a.time) - toMin(b.time); // 마감시간 순
     }
-    [...tasks].sort(sortTasks).forEach(t => board.appendChild(cardEl(t)));
+    const rA = a.room||"", rB = b.room||"";                           // 3순위 병실
+    if (!!rA !== !!rB) return rA ? -1 : 1;                            // 4순위 미설정 후순위
+    if (rA !== rB) return rA.localeCompare(rB, "ko", { numeric:true });
+    const nA = a.name||"", nB = b.name||"";                           // 이름 가나다
+    if (!!nA !== !!nB) return nA ? -1 : 1;
+    if (nA !== nB) return nA.localeCompare(nB, "ko");
+    return a.createdAt - b.createdAt;
   }
 
-  function cardEl(t) {
+  function orderedTasks(){
+    if (sortMode === "manual" && manualOrder.length){
+      const map = new Map(tasks.map(t => [t.id, t]));
+      const inOrder = manualOrder.map(id => map.get(id)).filter(Boolean);
+      const rest = tasks.filter(t => !manualOrder.includes(t.id)).sort(autoCmp);
+      return [...inOrder, ...rest];
+    }
+    return [...tasks].sort(autoCmp);
+  }
+
+  /* ── 렌더 ── */
+  function render(){
+    board.innerHTML = "";
+    if (!tasks.length){
+      board.innerHTML = `<div class="empty"><div class="big">🩺</div>업무를 추가해 두세요.<br>근무 중 화면에 리마인드 됩니다.</div>`;
+      updateAutoBtn(); return;
+    }
+    orderedTasks().forEach(t => board.appendChild(cardEl(t)));
+    updateAutoBtn();
+  }
+
+  function cardEl(t){
     const el = document.createElement("article");
-    const left = minutesLeft(t.time);
-    const alert = !t.done && left !== null && left <= 15;
-    el.className = `card bg-${t.bg} bd-${t.bd}${t.done ? " done":""}${alert ? " alert":""}`;
+    el.className = `card bg-${t.bg} bd-${t.bd}${t.done?" done":""}${t.activeAlert&&!t.done?" alarming":""}`;
+    el.dataset.id = t.id;
+    el.draggable = true;
 
     const b = fmtBadge(t);
     const patient = [t.room, t.name].filter(Boolean).join(" · ");
-    const ribbonTxt = t.bd === "mine" ? "내업무" : t.bd === "other" ? "타부서" : t.bd === "emphasis" ? "강조" : "";
+    const rib = RIB[t.bd] || "";
 
     el.innerHTML = `
-      ${ribbonTxt ? `<span class="ribbon">${ribbonTxt}</span>` : ""}
-      <div class="head">
-        <div class="title"></div>
-      </div>
+      ${rib ? `<span class="ribbon">${rib}</span>` : ""}
+      <div class="head"><div class="title"></div></div>
       ${patient ? `<span class="patient">🛏 ${esc(patient)}</span>` : ""}
       ${t.content ? `<div class="content"></div>` : ""}
       <div class="foot">
-        ${b.text ? `<span class="badge ${b.cls}">${t.time && !t.done && left<0 ? "⚠ ":""}${b.text}</span>` : ""}
+        ${t.activeAlert && !t.done ? `<span class="alarmtag">🔔 알림</span>` : ""}
+        ${b.text ? `<span class="badge ${b.cls}">${b.text}</span>` : ""}
         <span class="grow"></span>
-        <button class="iconbtn done" title="완료" data-act="done">${t.done ? "↩" : "✓"}</button>
+        <button class="iconbtn done" title="완료" data-act="done">${t.done?"↩":"✓"}</button>
         <button class="iconbtn" title="수정" data-act="edit">✎</button>
         <button class="iconbtn" title="삭제" data-act="del">🗑</button>
       </div>`;
-
     el.querySelector(".title").textContent = t.title;
     if (t.content) el.querySelector(".content").textContent = t.content;
 
-    el.querySelectorAll("[data-act]").forEach(btn => {
-      btn.addEventListener("click", () => act(btn.dataset.act, t.id));
+    el.querySelectorAll("[data-act]").forEach(btn =>
+      btn.addEventListener("click", e => { e.stopPropagation(); act(btn.dataset.act, t.id); }));
+
+    // 카드 클릭 = 알림 해제
+    el.addEventListener("click", e => {
+      if (e.target.closest("[data-act]")) return;
+      if (t.activeAlert){ t.activeAlert = false; save(); render(); refreshBadge(); }
     });
+
+    // 드래그 순서 변경
+    el.addEventListener("dragstart", () => el.classList.add("dragging"));
+    el.addEventListener("dragend", () => { el.classList.remove("dragging"); commitOrder(); });
     return el;
   }
 
   function esc(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 
-  function act(a, id) {
+  function act(a, id){
     const t = tasks.find(x => x.id === id);
     if (!t) return;
-    if (a === "del") {
-      if (confirm("이 업무를 삭제할까요?")) { tasks = tasks.filter(x => x.id !== id); save(); render(); }
-    } else if (a === "done") {
-      if (!t.done && t.repeat > 0 && t.time) {
-        // 반복 업무: 완료 시 다음 시각으로 이동
-        const [h,m] = t.time.split(":").map(Number);
-        let total = h*60 + m + t.repeat;
-        total %= 1440;
-        t.time = String(Math.floor(total/60)).padStart(2,"0") + ":" + String(total%60).padStart(2,"0");
+    if (a === "del"){
+      if (confirm("이 업무를 삭제할까요?")){ tasks = tasks.filter(x => x.id !== id); save(); render(); refreshBadge(); }
+    } else if (a === "done"){
+      if (!t.done && t.repeat > 0 && t.time){
+        let total = (toMin(t.time) + t.repeat) % 1440;
+        t.time = String(Math.floor(total/60)).padStart(2,"0")+":"+String(total%60).padStart(2,"0");
+        t.fired = []; t.activeAlert = false;
       } else {
-        t.done = !t.done;
+        t.done = !t.done; if (t.done) t.activeAlert = false;
       }
-      save(); render();
-    } else if (a === "edit") {
-      openForm(t);
-    }
+      save(); render(); refreshBadge();
+    } else if (a === "edit"){ openForm(t); }
   }
 
+  /* ── 드래그 정렬 ── */
+  board.addEventListener("dragover", e => {
+    e.preventDefault();
+    const dragging = board.querySelector(".dragging");
+    if (!dragging) return;
+    const pos = dragAfter(e.clientX, e.clientY);
+    if (!pos) board.appendChild(dragging);
+    else pos.before ? board.insertBefore(dragging, pos.el) : board.insertBefore(dragging, pos.el.nextSibling);
+  });
+  board.addEventListener("drop", e => e.preventDefault());
+
+  function dragAfter(x, y){
+    const els = [...board.querySelectorAll(".card:not(.dragging)")];
+    let best = null, bestD = Infinity, before = true;
+    for (const el of els){
+      const r = el.getBoundingClientRect();
+      const cx = r.left+r.width/2, cy = r.top+r.height/2;
+      const d = Math.hypot(x-cx, y-cy);
+      if (d < bestD){ bestD = d; best = el; before = (y < r.top) ? true : (y > r.bottom) ? false : (x < cx); }
+    }
+    return best ? { el:best, before } : null;
+  }
+
+  function commitOrder(){
+    manualOrder = [...board.querySelectorAll(".card")].map(el => el.dataset.id);
+    sortMode = "manual"; saveMeta(); updateAutoBtn();
+  }
+  function updateAutoBtn(){ autoSortBtn.style.display = (sortMode==="manual" && tasks.length) ? "inline-block" : "none"; }
+  autoSortBtn.addEventListener("click", () => { sortMode = "auto"; manualOrder = []; saveMeta(); render(); });
+
+  /* ── 알림 스캔 ── */
+  function scanAlarms(){
+    let changed = false;
+    for (const t of tasks){
+      if (t.done || t.bg !== "deadline" || !t.time || !t.alarms.length) continue;
+      const left = minutesLeft(t.time);
+      if (left === null) continue;
+      const due = t.alarms.filter(m => left <= m && !t.fired.includes(m));
+      if (due.length){
+        due.forEach(m => t.fired.push(m));
+        t.activeAlert = true; changed = true;
+        notify(t, Math.min(...due));
+      }
+    }
+    if (changed){ save(); refreshBadge(); }
+  }
+
+  function notify(t, min){
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    const title = `⏰ ${min}분 전 · ${t.title}`;
+    const body = [[t.room, t.name].filter(Boolean).join(" "), t.content].filter(Boolean).join(" · ");
+    const opts = { body, icon:"icons/icon-192.png", badge:"icons/icon-192.png", tag:"ward-"+t.id, renotify:true, requireInteraction:true };
+    if (swReg && swReg.showNotification) swReg.showNotification(title, opts).catch(() => { try { new Notification(title, opts); } catch {} });
+    else { try { new Notification(title, opts); } catch {} }
+  }
+
+  function refreshBadge(){
+    const n = tasks.filter(t => t.activeAlert && !t.done).length;
+    if (navigator.setAppBadge){ n ? navigator.setAppBadge(n) : navigator.clearAppBadge?.(); }
+  }
+  async function ensurePerm(){ if ("Notification" in window && Notification.permission === "default"){ try { await Notification.requestPermission(); } catch {} } }
+
   /* ── 폼 ── */
-  function setChips() {
+  function setChips(){
     document.querySelectorAll('.chip[data-group="bg"]').forEach(c => c.classList.toggle("sel", c.dataset.val === sel.bg));
     document.querySelectorAll('.chip[data-group="bd"]').forEach(c => c.classList.toggle("sel", c.dataset.val === sel.bd));
   }
-  document.querySelectorAll(".chip").forEach(c => {
-    c.addEventListener("click", () => { sel[c.dataset.group] = c.dataset.val; setChips(); });
-  });
+  document.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => { sel[c.dataset.group] = c.dataset.val; setChips(); }));
 
-  function openForm(t) {
+  function openForm(t){
     editingId = t ? t.id : null;
     $("#f-title").value = t ? t.title : "";
     $("#f-room").value = t ? (t.room||"") : "";
@@ -384,6 +428,7 @@
     $("#f-time").value = t ? (t.time||"") : "";
     $("#f-content").value = t ? (t.content||"") : "";
     $("#f-repeat").value = t ? String(t.repeat||0) : "0";
+    document.querySelectorAll("#alarmChips input").forEach(i => i.checked = t ? (t.alarms||[]).includes(+i.value) : true);
     sel.bg = t ? t.bg : "regular";
     sel.bd = t ? t.bd : "none";
     $("#saveBtn").textContent = t ? "수정" : "추가";
@@ -391,54 +436,55 @@
     panel.classList.add("open");
     $("#f-title").focus();
   }
-  function closeForm() { panel.classList.remove("open"); editingId = null; form.reset(); }
+  function closeForm(){ panel.classList.remove("open"); editingId = null; form.reset(); }
 
   $("#addBtn").addEventListener("click", () => panel.classList.contains("open") ? closeForm() : openForm(null));
   $("#cancelBtn").addEventListener("click", closeForm);
 
   form.addEventListener("submit", e => {
     e.preventDefault();
+    const alarms = [...document.querySelectorAll("#alarmChips input:checked")].map(i => +i.value);
     const data = {
-      title: $("#f-title").value.trim(),
-      room: $("#f-room").value.trim(),
-      name: $("#f-name").value.trim(),
-      time: $("#f-time").value,
-      content: $("#f-content").value.trim(),
-      repeat: parseInt($("#f-repeat").value, 10) || 0,
-      bg: sel.bg, bd: sel.bd,
+      title: $("#f-title").value.trim(), room: $("#f-room").value.trim(), name: $("#f-name").value.trim(),
+      time: $("#f-time").value, content: $("#f-content").value.trim(),
+      repeat: parseInt($("#f-repeat").value, 10) || 0, alarms, bg: sel.bg, bd: sel.bd,
     };
     if (!data.title) return;
-    if (editingId) {
+    if (editingId){
       const t = tasks.find(x => x.id === editingId);
-      Object.assign(t, data);
+      Object.assign(t, data); t.fired = []; t.activeAlert = false;   // 수정 시 알림 재무장
     } else {
-      tasks.push({ id: uid(), createdAt: Date.now(), done: false, ...data });
+      tasks.push({ id: uid(), createdAt: Date.now(), done: false, fired: [], activeAlert: false, ...data });
     }
-    save(); render(); closeForm();
+    if (data.bg === "deadline" && alarms.length) ensurePerm();
+    save(); render(); refreshBadge(); closeForm();
   });
 
-  /* ── 시계 & 주기적 갱신 ── */
-  function tick() {
+  /* ── 시계 · 주기 갱신 ── */
+  function tick(){
     const n = new Date();
-    $("#clock").textContent = String(n.getHours()).padStart(2,"0") + ":" + String(n.getMinutes()).padStart(2,"0");
+    $("#clock").textContent = String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0");
+    scanAlarms(); render();
   }
-  tick(); render();
-  setInterval(() => { tick(); render(); }, 20000);
+  tick();
+  setInterval(tick, 15000);
 
-  /* ── PWA 설치 ── */
+  // 최소화/백그라운드 시 제목 깜빡임
+  setInterval(() => {
+    const n = tasks.filter(t => t.activeAlert && !t.done).length;
+    if (n > 0 && document.hidden) document.title = document.title.startsWith("🔔") ? "병동 업무 리마인더" : `🔔 알림 ${n}건`;
+    else document.title = "병동 업무 리마인더";
+  }, 1000);
+
+  /* ── PWA ── */
   let deferred = null;
   const installBtn = $("#installBtn");
   window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; installBtn.style.display = "inline-block"; });
-  installBtn.addEventListener("click", async () => {
-    if (!deferred) return;
-    deferred.prompt();
-    await deferred.userChoice;
-    deferred = null; installBtn.style.display = "none";
-  });
-  window.addEventListener("appinstalled", () => { installBtn.style.display = "none"; });
+  installBtn.addEventListener("click", async () => { if (!deferred) return; deferred.prompt(); await deferred.userChoice; deferred = null; installBtn.style.display = "none"; });
+  window.addEventListener("appinstalled", () => installBtn.style.display = "none");
 
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(()=>{}));
+  if ("serviceWorker" in navigator){
+    window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").then(r => swReg = r).catch(() => {}));
   }
 })();
 </script>
