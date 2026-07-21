@@ -37,7 +37,8 @@
   .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(106,160,216,.35); }
   .btn.ghost { background: transparent; }
   .btn.warn { background: #fff6da; border-color: var(--bd-other); color: #8a6d00; }
-  #installBtn, #autoSortBtn { display: none; }
+  .btn.danger { background: #ffecec; border-color: var(--bd-important); color: #b12626; }
+  #installBtn, #autoSortBtn, #clearBtn { display: none; }
 
   /* 입력 패널 */
   #panel { max-width: 560px; margin: 12px auto 0; padding: 0 14px; overflow: hidden; max-height: 0; transition: max-height .3s ease; }
@@ -102,6 +103,7 @@
   <span class="clock" id="clock">--:--</span>
   <span class="spacer"></span>
   <button class="btn warn" id="autoSortBtn">자동정렬</button>
+  <button class="btn danger" id="clearBtn">전체 삭제</button>
   <button class="btn ghost" id="installBtn">설치</button>
   <button class="btn primary" id="addBtn">+ 업무</button>
 </header>
@@ -150,7 +152,7 @@
   const KEY = "ward-tasks-v1", SORTKEY = "ward-orders-v1", COMMON = "__COMMON__";
   const $ = (s, r=document) => r.querySelector(s);
   const board = $("#board"), form = $("#form"), panel = $("#panel"), pop = $("#pop");
-  const autoSortBtn = $("#autoSortBtn");
+  const autoSortBtn = $("#autoSortBtn"), clearBtn = $("#clearBtn");
 
   let tasks = load();
   let orders = loadOrders();          // { patientKey: [taskId,...] }
@@ -254,8 +256,16 @@
     return el;
   }
 
-  function updateAutoBtn(){ autoSortBtn.style.display = (Object.keys(orders).length && tasks.length) ? "inline-block" : "none"; }
+  function updateAutoBtn(){
+    autoSortBtn.style.display = (Object.keys(orders).length && tasks.length) ? "inline-block" : "none";
+    clearBtn.style.display = tasks.length ? "inline-block" : "none";
+  }
   autoSortBtn.addEventListener("click", () => { orders = {}; saveOrders(); render(); });
+  clearBtn.addEventListener("click", () => {
+    if (confirm(`전체 업무 ${tasks.length}건을 모두 삭제할까요?\n되돌릴 수 없습니다.`)){
+      tasks = []; orders = {}; save(); saveOrders(); closePop(); render();
+    }
+  });
 
   /* ── 드래그: 줄 안 순서 변경 + 다른 환자 줄로 이동 ── */
   board.addEventListener("dragover", e => {
