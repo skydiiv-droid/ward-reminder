@@ -1,4 +1,4 @@
-const CACHE = "ward-reminder-v4";
+const CACHE = "ward-reminder-v5";
 const ASSETS = [
   "./",
   "./index.html",
@@ -19,26 +19,29 @@ self.addEventListener("activate", e => {
   );
 });
 
-self.addEventListener("notificationclick", e => {
-  e.notification.close();
-  e.waitUntil(
-    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(list => {
-      for (const c of list) { if ("focus" in c) return c.focus(); }
-      if (self.clients.openWindow) return self.clients.openWindow("./index.html");
-    })
-  );
-});
-
 self.addEventListener("fetch", e => {
-  if (e.request.method !== "GET") return;
-  e.respondWith(
-    caches.match(e.request).then(cached => {
-      if (cached) return cached;
-      return fetch(e.request).then(res => {
+  const req = e.request;
+  if (req.method !== "GET") return;
+
+  // 문서(HTML)는 네트워크 우선 → 항상 최신, 오프라인이면 캐시로 폴백
+  const isDoc = req.mode === "navigate" || req.destination === "document";
+  if (isDoc) {
+    e.respondWith(
+      fetch(req).then(res => {
         const copy = res.clone();
-        caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
+        caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
         return res;
-      }).catch(() => caches.match("./index.html"));
-    })
+      }).catch(() => caches.match(req).then(r => r || caches.match("./index.html")))
+    );
+    return;
+  }
+
+  // 그 외 정적 자원은 캐시 우선
+  e.respondWith(
+    caches.match(req).then(cached => cached || fetch(req).then(res => {
+      const copy = res.clone();
+      caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
+      return res;
+    }))
   );
 });

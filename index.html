@@ -384,6 +384,13 @@
   window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; installBtn.style.display = "inline-block"; });
   installBtn.addEventListener("click", async () => { if (!deferred) return; deferred.prompt(); await deferred.userChoice; deferred = null; installBtn.style.display = "none"; });
   window.addEventListener("appinstalled", () => installBtn.style.display = "none");
-  if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").then(r => swReg = r).catch(() => {}));
+  if ("serviceWorker" in navigator){
+    const hadController = !!navigator.serviceWorker.controller;
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (hadController && !refreshing){ refreshing = true; location.reload(); }  // 새 버전 활성화 시 자동 새로고침
+    });
+    window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").then(r => { swReg = r; r.update(); }).catch(() => {}));
+  }
 })();
 </script>
