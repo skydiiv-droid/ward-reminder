@@ -13,133 +13,88 @@
     --bg-deadline: #fcdce7;  /* 시간 제한 · 분홍 */
     --bg-before: #e0f0cd;    /* 퇴근 전 · 연두 */
     --bg-optional: #d4e9f7;  /* 선택 · 하늘 */
-
     /* 테두리 색 (담당/강조) */
     --bd-important: #ef6a6a; /* 중요 · 빨강 */
     --bd-mine: #5b90e6;      /* 내 업무 · 파랑 */
     --bd-other: #e6bb35;     /* 타 부서 확인 · 노랑 */
     --bd-otherdone: #a97ad0; /* 타 부서 시행 · 보라 */
-    --bd-none: rgba(0,0,0,.12);
+    --bd-none: rgba(0,0,0,.14);
 
-    --ink: #2c333b;
-    --ink-soft: #5b6570;
-    --page: #f4f6f8;
-    --panel: #ffffff;
-    --line: #e4e8ec;
-    --accent: #6aa0d8;
-    --warn: #e6bb35;
-
-    --card-w: 300px;
-    --f-main: 9px;
-    --f-title: 13px;
+    --ink: #2c333b; --ink-soft: #5b6570;
+    --page: #f4f6f8; --panel: #ffffff; --line: #e4e8ec; --accent: #6aa0d8;
   }
-
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; }
-  body {
-    font-family: "Segoe UI", "맑은 고딕", "Malgun Gothic", system-ui, sans-serif;
-    background: var(--page);
-    color: var(--ink);
-    font-size: var(--f-main);
-    padding-bottom: 40px;
-  }
+  body { font-family: "Segoe UI","맑은 고딕","Malgun Gothic",system-ui,sans-serif; background: var(--page); color: var(--ink); font-size: 11px; padding-bottom: 40px; }
 
-  /* ── 헤더 ── */
-  header {
-    position: sticky; top: 0; z-index: 20;
-    display: flex; align-items: center; gap: 8px;
-    padding: 10px 14px;
-    background: rgba(244,246,248,.92);
-    backdrop-filter: blur(6px);
-    border-bottom: 1px solid var(--line);
-  }
+  /* 헤더 */
+  header { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: rgba(244,246,248,.92); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
   header h1 { font-size: 15px; margin: 0; font-weight: 800; letter-spacing: -.3px; white-space: nowrap; }
   header .clock { font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 700; color: var(--ink-soft); }
   header .spacer { flex: 1; }
-  .btn {
-    font-family: inherit; font-size: 12px; font-weight: 700;
-    border: 1px solid var(--line); background: var(--panel); color: var(--ink);
-    padding: 7px 11px; border-radius: 9px; cursor: pointer; white-space: nowrap;
-    transition: transform .06s, background .15s, box-shadow .15s;
-  }
+  .btn { font-family: inherit; font-size: 12px; font-weight: 700; border: 1px solid var(--line); background: var(--panel); color: var(--ink); padding: 7px 11px; border-radius: 9px; cursor: pointer; white-space: nowrap; transition: transform .06s; }
   .btn:active { transform: translateY(1px); }
   .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: 0 2px 8px rgba(106,160,216,.35); }
   .btn.ghost { background: transparent; }
-  .btn.warn { background: #fff6da; border-color: var(--warn); color: #8a6d00; }
+  .btn.warn { background: #fff6da; border-color: var(--bd-other); color: #8a6d00; }
   #installBtn, #autoSortBtn { display: none; }
 
-  /* ── 입력 패널 ── */
-  #panel { max-width: 640px; margin: 12px auto 0; padding: 0 14px; overflow: hidden; max-height: 0; transition: max-height .3s ease; }
-  #panel.open { max-height: 900px; }
+  /* 입력 패널 */
+  #panel { max-width: 560px; margin: 12px auto 0; padding: 0 14px; overflow: hidden; max-height: 0; transition: max-height .3s ease; }
+  #panel.open { max-height: 720px; }
   .form { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: grid; gap: 10px; box-shadow: 0 6px 20px rgba(40,55,75,.06); }
   .row { display: grid; gap: 8px; }
   .row.two { grid-template-columns: 1fr 1fr; }
   label { font-size: 10px; font-weight: 700; color: var(--ink-soft); display: block; margin-bottom: 4px; }
-  input, textarea, select { width: 100%; font-family: inherit; font-size: 12px; color: var(--ink); border: 1px solid var(--line); border-radius: 9px; padding: 8px 9px; background: #fbfcfd; outline: none; }
-  input:focus, textarea:focus, select:focus { border-color: var(--accent); background: #fff; }
+  input, textarea { width: 100%; font-family: inherit; font-size: 12px; color: var(--ink); border: 1px solid var(--line); border-radius: 9px; padding: 8px 9px; background: #fbfcfd; outline: none; }
+  input:focus, textarea:focus { border-color: var(--accent); background: #fff; }
   textarea { resize: vertical; min-height: 46px; }
-
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .chip { font-size: 11px; font-weight: 700; cursor: pointer; user-select: none; padding: 6px 10px; border-radius: 20px; border: 2px solid transparent; display: inline-flex; align-items: center; gap: 5px; background: #f1f4f7; color: var(--ink-soft); }
   .chip .dot { width: 11px; height: 11px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
   .chip[data-group="bg"].sel { color: var(--ink); box-shadow: 0 0 0 2px var(--accent) inset; }
   .chip[data-group="bd"].sel { color: var(--ink); box-shadow: 0 0 0 2px var(--ink) inset; }
-  .acheck { font-size: 11px; font-weight: 700; color: var(--ink-soft); background: #f1f4f7; border-radius: 20px; padding: 5px 10px; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; user-select: none; }
-  .acheck input { width: auto; margin: 0; accent-color: var(--accent); }
-
   .form-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 2px; }
 
-  /* ── 보드 ── */
-  #board { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; padding: 16px 14px; align-items: flex-start; }
+  /* 보드 · 환자별 줄 */
+  #board { max-width: 1100px; margin: 0 auto; padding: 14px; display: flex; flex-direction: column; gap: 8px; }
   .empty { color: var(--ink-soft); text-align: center; margin: 60px auto; font-size: 13px; }
   .empty .big { font-size: 34px; margin-bottom: 8px; }
 
-  /* ── 업무 카드 ── */
-  .card { width: var(--card-w); border-radius: 12px; padding: 10px 11px 11px; border: 2.5px solid var(--bd-none); box-shadow: 0 3px 10px rgba(40,55,75,.08); position: relative; overflow: hidden; cursor: grab; }
-  .card.bg-regular  { background: var(--bg-regular); }
-  .card.bg-deadline { background: var(--bg-deadline); }
-  .card.bg-before   { background: var(--bg-before); }
-  .card.bg-optional { background: var(--bg-optional); }
-  .card.bd-important { border-color: var(--bd-important); }
-  .card.bd-mine      { border-color: var(--bd-mine); }
-  .card.bd-other     { border-color: var(--bd-other); }
-  .card.bd-otherdone { border-color: var(--bd-otherdone); }
+  .prow { display: flex; align-items: stretch; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; box-shadow: 0 2px 6px rgba(40,55,75,.05); }
+  .phead { width: 84px; flex-shrink: 0; background: #f1f4f7; border-right: 1px solid var(--line); padding: 8px; display: flex; flex-direction: column; justify-content: center; gap: 2px; }
+  .phead .room { font-size: 14px; font-weight: 800; letter-spacing: -.3px; }
+  .phead .name { font-size: 12px; font-weight: 700; color: var(--ink-soft); }
+  .phead.common { background: #e9f1f7; }
+  .phead.common .room { color: var(--accent); }
 
-  .card .head { display: flex; align-items: flex-start; gap: 6px; }
-  .card .title { font-size: var(--f-title); font-weight: 800; line-height: 1.25; letter-spacing: -.3px; flex: 1; }
-  .card.bd-important .title { font-size: 15px; color: #b83232; }
-  .card .patient { font-size: 10px; font-weight: 800; color: var(--ink); background: rgba(255,255,255,.65); border-radius: 6px; padding: 2px 6px; margin-top: 5px; display: inline-block; }
-  .card .content { font-size: var(--f-main); color: var(--ink-soft); margin-top: 6px; line-height: 1.45; white-space: pre-wrap; }
+  .ptasks { flex: 1; display: flex; flex-wrap: wrap; gap: 6px; padding: 8px; align-content: center; align-items: center; min-height: 44px; }
+  .task { font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 9px; border: 2px solid var(--bd-none); cursor: grab; user-select: none; line-height: 1.2; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .task.bg-regular  { background: var(--bg-regular); }
+  .task.bg-deadline { background: var(--bg-deadline); }
+  .task.bg-before   { background: var(--bg-before); }
+  .task.bg-optional { background: var(--bg-optional); }
+  .task.bd-important { border-color: var(--bd-important); }
+  .task.bd-mine      { border-color: var(--bd-mine); }
+  .task.bd-other     { border-color: var(--bd-other); }
+  .task.bd-otherdone { border-color: var(--bd-otherdone); }
+  .task.bd-important { font-size: 12.5px; color: #b83232; }
+  .task.done { opacity: .45; text-decoration: line-through; }
+  .task.dragging { opacity: .4; }
+  .addchip { font-size: 14px; font-weight: 800; color: var(--ink-soft); background: transparent; border: 1.5px dashed var(--line); border-radius: 9px; padding: 4px 10px; cursor: pointer; line-height: 1.2; }
+  .addchip:hover { border-color: var(--accent); color: var(--accent); }
 
-  .card .foot { display: flex; align-items: center; gap: 6px; margin-top: 9px; }
-  .badge { font-size: 10px; font-weight: 800; padding: 3px 7px; border-radius: 6px; background: rgba(255,255,255,.7); color: var(--ink); font-variant-numeric: tabular-nums; }
-  .badge.soon { background: #fff3cd; color: #8a6d00; }
-  .badge.overdue { background: #ffd9d9; color: #b12626; }
-  .foot .grow { flex: 1; }
-  .iconbtn { border: none; background: rgba(255,255,255,.6); cursor: pointer; width: 26px; height: 26px; border-radius: 7px; font-size: 13px; line-height: 1; display: grid; place-items: center; color: var(--ink-soft); }
-  .iconbtn:active { transform: translateY(1px); }
-  .iconbtn.done { color: #2f8f4e; }
+  /* 팝오버 */
+  #pop { position: fixed; z-index: 50; display: none; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 30px rgba(40,55,75,.22); padding: 10px; width: 220px; }
+  #pop.open { display: block; }
+  #pop .pop-content { font-size: 12px; color: var(--ink); line-height: 1.5; white-space: pre-wrap; margin-bottom: 9px; word-break: break-word; }
+  #pop .pop-content i { color: var(--ink-soft); }
+  #pop .pop-actions { display: flex; gap: 6px; }
+  #pop .pop-actions button { flex: 1; font-family: inherit; font-size: 11px; font-weight: 700; border: 1px solid var(--line); background: #fbfcfd; border-radius: 8px; padding: 7px 4px; cursor: pointer; }
+  #pop .pop-actions button[data-a="done"] { color: #2f8f4e; }
+  #pop .pop-actions button[data-a="del"] { color: #b12626; }
 
-  /* 담당 표시 리본 */
-  .card .ribbon { position: absolute; top: 8px; right: -26px; transform: rotate(45deg); font-size: 9px; font-weight: 800; color: #fff; padding: 2px 26px; display: none; }
-  .card.bd-important .ribbon { background: var(--bd-important); display: block; }
-  .card.bd-mine .ribbon { background: var(--bd-mine); display: block; }
-  .card.bd-other .ribbon { background: var(--bd-other); color: #5c4b00; display: block; }
-  .card.bd-otherdone .ribbon { background: var(--bd-otherdone); display: block; }
-
-  /* 알림 깜빡임 */
-  @keyframes alarmblink {
-    0%,100% { box-shadow: 0 3px 10px rgba(40,55,75,.08); }
-    50% { box-shadow: 0 0 0 4px rgba(230,187,53,.9), 0 4px 16px rgba(230,187,53,.55); background-image: linear-gradient(rgba(255,241,179,.55), rgba(255,241,179,.55)); }
-  }
-  .card.alarming { animation: alarmblink 1s infinite; }
-  .card .alarmtag { font-size: 10px; font-weight: 800; color: #8a6d00; background: #fff2c2; padding: 3px 7px; border-radius: 6px; }
-
-  .card.dragging { opacity: .45; transform: scale(.98); cursor: grabbing; }
-  .card.done { opacity: .5; }
-  .card.done .title { text-decoration: line-through; }
-
-  footer { text-align: center; color: var(--ink-soft); font-size: 10px; margin-top: 20px; opacity: .7; }
+  footer { text-align: center; color: var(--ink-soft); font-size: 10px; margin-top: 18px; opacity: .7; }
 </style>
 
 <header>
@@ -153,27 +108,12 @@
 
 <section id="panel">
   <form class="form" id="form" autocomplete="off">
-    <div class="row">
-      <div><label>제목</label><input id="f-title" required maxlength="40" /></div>
-    </div>
+    <div class="row"><div><label>할 일 (제목)</label><input id="f-title" required maxlength="40" /></div></div>
     <div class="row two">
-      <div><label>병실</label><input id="f-room" maxlength="20" /></div>
+      <div><label>병실 <span style="font-weight:400">· 비우면 병동 공통</span></label><input id="f-room" maxlength="20" /></div>
       <div><label>이름</label><input id="f-name" maxlength="20" /></div>
     </div>
-    <div class="row two">
-      <div><label>마감 시간</label><input id="f-time" type="time" /></div>
-      <div><label>반복</label>
-        <select id="f-repeat">
-          <option value="0">한 번</option>
-          <option value="60">1시간마다</option>
-          <option value="120">2시간마다</option>
-          <option value="240">4시간마다</option>
-        </select>
-      </div>
-    </div>
-    <div class="row">
-      <div><label>내용</label><textarea id="f-content" maxlength="200"></textarea></div>
-    </div>
+    <div class="row"><div><label>내용 (선택)</label><textarea id="f-content" maxlength="200"></textarea></div></div>
     <div class="row">
       <label>배경 · 업무 성격</label>
       <div class="chips" id="bgChips">
@@ -193,15 +133,6 @@
         <span class="chip" data-group="bd" data-val="otherdone"><span class="dot" style="background:var(--bd-otherdone)"></span>타 부서 시행</span>
       </div>
     </div>
-    <div class="row">
-      <label>알림 · 시간 제한 업무 (마감 전)</label>
-      <div class="chips" id="alarmChips">
-        <label class="acheck"><input type="checkbox" value="60" checked>1시간</label>
-        <label class="acheck"><input type="checkbox" value="30" checked>30분</label>
-        <label class="acheck"><input type="checkbox" value="10" checked>10분</label>
-        <label class="acheck"><input type="checkbox" value="5" checked>5분</label>
-      </div>
-    </div>
     <div class="form-actions">
       <button type="button" class="btn ghost" id="cancelBtn">취소</button>
       <button type="submit" class="btn primary" id="saveBtn">추가</button>
@@ -210,160 +141,137 @@
 </section>
 
 <main id="board"></main>
-<footer>병동 업무 리마인더 · 카드 클릭 = 알림 해제 · 드래그로 순서 변경</footer>
+<div id="pop"></div>
+<footer>환자별 to-do · 칸 클릭 = 내용/완료/수정 · 드래그로 순서·환자 이동</footer>
 
 <script>
 (() => {
   "use strict";
-  const KEY = "ward-tasks-v1";
-  const SORTKEY = "ward-sort-v1";
+  const KEY = "ward-tasks-v1", SORTKEY = "ward-orders-v1", COMMON = "__COMMON__";
   const $ = (s, r=document) => r.querySelector(s);
-  const board = $("#board"), form = $("#form"), panel = $("#panel");
+  const board = $("#board"), form = $("#form"), panel = $("#panel"), pop = $("#pop");
   const autoSortBtn = $("#autoSortBtn");
 
   let tasks = load();
+  let orders = loadOrders();          // { patientKey: [taskId,...] }
   let editingId = null;
   let sel = { bg: "regular", bd: "none" };
-  let sortMode = "auto", manualOrder = [];
+  let justDragged = false;
   let swReg = null;
 
-  (function loadMeta(){ try { const m = JSON.parse(localStorage.getItem(SORTKEY)); if (m){ sortMode = m.mode || "auto"; manualOrder = m.order || []; } } catch {} })();
-
   function load(){ try { return (JSON.parse(localStorage.getItem(KEY))||[]).map(migrate); } catch { return []; } }
-  function migrate(t){ if (t.bd === "emphasis") t.bd = "important"; if (!Array.isArray(t.fired)) t.fired = []; if (!Array.isArray(t.alarms)) t.alarms = []; return t; }
+  function migrate(t){ if (t.bd === "emphasis") t.bd = "important";
+    return { id:t.id, createdAt:t.createdAt||Date.now(), done:!!t.done, title:t.title||"", room:t.room||"", name:t.name||"", content:t.content||"", bg:t.bg||"regular", bd:t.bd||"none" }; }
+  function loadOrders(){ try { return JSON.parse(localStorage.getItem(SORTKEY)) || {}; } catch { return {}; } }
   function save(){ localStorage.setItem(KEY, JSON.stringify(tasks)); }
-  function saveMeta(){ localStorage.setItem(SORTKEY, JSON.stringify({ mode: sortMode, order: manualOrder })); }
+  function saveOrders(){ localStorage.setItem(SORTKEY, JSON.stringify(orders)); }
   function uid(){ return Date.now().toString(36) + Math.floor(Math.random()*1e4).toString(36); }
+  function esc(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 
-  const RIB = { important:"중요", mine:"내업무", other:"확인", otherdone:"시행" };
+  const pkey = t => (t.room || t.name) ? (t.room + "␟" + t.name) : COMMON;
 
-  function toMin(t){ const [h,m] = t.split(":").map(Number); return h*60+m; }
-  function minutesLeft(time){ if (!time) return null; const now = new Date(); let d = toMin(time) - (now.getHours()*60+now.getMinutes()); if (d < -720) d += 1440; return d; }
-
-  function fmtBadge(t){
-    const left = minutesLeft(t.time);
-    if (left === null) return { cls:"", text:"" };
-    if (t.done) return { cls:"", text:"마감 "+t.time };
-    if (left < 0) return { cls:"overdue", text:`${-left}분 지남` };
-    if (left <= 60) return { cls:"soon", text:`${left}분 남음` };
-    return { cls:"", text:"마감 "+t.time };
-  }
-
-  /* ── 정렬 규칙 ── */
-  function autoCmp(a, b){
-    if (a.done !== b.done) return a.done ? 1 : -1;                    // 완료 맨 아래
-    const impA = a.bd==="important", impB = b.bd==="important";
-    if (impA !== impB) return impA ? -1 : 1;                          // 1순위 중요
-    const tlA = a.bg==="deadline", tlB = b.bg==="deadline";
-    if (tlA !== tlB) return tlA ? -1 : 1;                             // 2순위 시간 제한
-    if (tlA && tlB){
-      const hA = !!a.time, hB = !!b.time;
-      if (hA !== hB) return hA ? -1 : 1;                              // 시간 미설정은 후순위
-      if (a.time && b.time && a.time !== b.time) return toMin(a.time) - toMin(b.time); // 마감시간 순
-    }
-    const rA = a.room||"", rB = b.room||"";                           // 3순위 병실
-    if (!!rA !== !!rB) return rA ? -1 : 1;                            // 4순위 미설정 후순위
-    if (rA !== rB) return rA.localeCompare(rB, "ko", { numeric:true });
-    const nA = a.name||"", nB = b.name||"";                           // 이름 가나다
-    if (!!nA !== !!nB) return nA ? -1 : 1;
-    if (nA !== nB) return nA.localeCompare(nB, "ko");
+  /* ── 줄(환자) 안 할 일 정렬: 중요 → 시간제한 → 입력순, 완료는 맨 뒤 ── */
+  function autoTaskCmp(a, b){
+    if (a.done !== b.done) return a.done ? 1 : -1;
+    const iA = a.bd==="important", iB = b.bd==="important";
+    if (iA !== iB) return iA ? -1 : 1;
+    const dA = a.bg==="deadline", dB = b.bg==="deadline";
+    if (dA !== dB) return dA ? -1 : 1;
     return a.createdAt - b.createdAt;
   }
 
-  function orderedTasks(){
-    if (sortMode === "manual" && manualOrder.length){
-      const map = new Map(tasks.map(t => [t.id, t]));
-      const inOrder = manualOrder.map(id => map.get(id)).filter(Boolean);
-      const rest = tasks.filter(t => !manualOrder.includes(t.id)).sort(autoCmp);
-      return [...inOrder, ...rest];
+  function buildGroups(){
+    const map = new Map();
+    for (const t of tasks){
+      const k = pkey(t);
+      if (!map.has(k)) map.set(k, { key:k, room:t.room||"", name:t.name||"", tasks:[] });
+      map.get(k).tasks.push(t);
     }
-    return [...tasks].sort(autoCmp);
+    const arr = [...map.values()];
+    arr.sort((a, b) => {
+      const cA = a.key===COMMON, cB = b.key===COMMON;
+      if (cA !== cB) return cA ? -1 : 1;                 // 공통 줄 맨 위
+      if (a.room !== b.room) return a.room.localeCompare(b.room, "ko", { numeric:true });
+      return a.name.localeCompare(b.name, "ko");
+    });
+    for (const g of arr){
+      const ord = orders[g.key];
+      if (ord && ord.length){
+        const m = new Map(g.tasks.map(t => [t.id, t]));
+        const inOrder = ord.map(id => m.get(id)).filter(Boolean);
+        const rest = g.tasks.filter(t => !ord.includes(t.id)).sort(autoTaskCmp);
+        g.tasks = [...inOrder, ...rest];
+      } else g.tasks.sort(autoTaskCmp);
+    }
+    return arr;
   }
 
   /* ── 렌더 ── */
   function render(){
     board.innerHTML = "";
     if (!tasks.length){
-      board.innerHTML = `<div class="empty"><div class="big">🩺</div>업무를 추가해 두세요.<br>근무 중 화면에 리마인드 됩니다.</div>`;
+      board.innerHTML = `<div class="empty"><div class="big">🩺</div>업무를 추가해 두세요.<br>환자별로 정리되어 표시됩니다.</div>`;
       updateAutoBtn(); return;
     }
-    orderedTasks().forEach(t => board.appendChild(cardEl(t)));
+    for (const g of buildGroups()) board.appendChild(rowEl(g));
     updateAutoBtn();
   }
 
-  function cardEl(t){
-    const el = document.createElement("article");
-    el.className = `card bg-${t.bg} bd-${t.bd}${t.done?" done":""}${t.activeAlert&&!t.done?" alarming":""}`;
+  function rowEl(g){
+    const row = document.createElement("div");
+    row.className = "prow";
+    const common = g.key === COMMON;
+    const phead = document.createElement("div");
+    phead.className = "phead" + (common ? " common" : "");
+    phead.innerHTML = common
+      ? `<div class="room">🏥 공통</div>`
+      : `<div class="room">${g.room ? esc(g.room) : "&nbsp;"}</div>${g.name ? `<div class="name">${esc(g.name)}</div>` : ""}`;
+
+    const wrap = document.createElement("div");
+    wrap.className = "ptasks";
+    wrap.dataset.key = g.key; wrap.dataset.room = g.room; wrap.dataset.name = g.name;
+
+    for (const t of g.tasks) wrap.appendChild(taskEl(t));
+
+    const add = document.createElement("button");
+    add.className = "addchip"; add.textContent = "+"; add.title = "이 환자에 할 일 추가";
+    add.addEventListener("click", () => openForm(null, { room:g.room, name:g.name }));
+    wrap.appendChild(add);
+
+    row.appendChild(phead); row.appendChild(wrap);
+    return row;
+  }
+
+  function taskEl(t){
+    const el = document.createElement("span");
+    el.className = `task bg-${t.bg} bd-${t.bd}${t.done?" done":""}`;
     el.dataset.id = t.id;
+    el.textContent = t.title;
     el.draggable = true;
-
-    const b = fmtBadge(t);
-    const patient = [t.room, t.name].filter(Boolean).join(" · ");
-    const rib = RIB[t.bd] || "";
-
-    el.innerHTML = `
-      ${rib ? `<span class="ribbon">${rib}</span>` : ""}
-      <div class="head"><div class="title"></div></div>
-      ${patient ? `<span class="patient">🛏 ${esc(patient)}</span>` : ""}
-      ${t.content ? `<div class="content"></div>` : ""}
-      <div class="foot">
-        ${t.activeAlert && !t.done ? `<span class="alarmtag">🔔 알림</span>` : ""}
-        ${b.text ? `<span class="badge ${b.cls}">${b.text}</span>` : ""}
-        <span class="grow"></span>
-        <button class="iconbtn done" title="완료" data-act="done">${t.done?"↩":"✓"}</button>
-        <button class="iconbtn" title="수정" data-act="edit">✎</button>
-        <button class="iconbtn" title="삭제" data-act="del">🗑</button>
-      </div>`;
-    el.querySelector(".title").textContent = t.title;
-    if (t.content) el.querySelector(".content").textContent = t.content;
-
-    el.querySelectorAll("[data-act]").forEach(btn =>
-      btn.addEventListener("click", e => { e.stopPropagation(); act(btn.dataset.act, t.id); }));
-
-    // 카드 클릭 = 알림 해제
-    el.addEventListener("click", e => {
-      if (e.target.closest("[data-act]")) return;
-      if (t.activeAlert){ t.activeAlert = false; save(); render(); refreshBadge(); }
-    });
-
-    // 드래그 순서 변경
+    el.addEventListener("click", () => { if (justDragged) return; openPop(t, el); });
     el.addEventListener("dragstart", () => el.classList.add("dragging"));
-    el.addEventListener("dragend", () => { el.classList.remove("dragging"); commitOrder(); });
+    el.addEventListener("dragend", () => { el.classList.remove("dragging"); commitDrag(el); });
     return el;
   }
 
-  function esc(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+  function updateAutoBtn(){ autoSortBtn.style.display = (Object.keys(orders).length && tasks.length) ? "inline-block" : "none"; }
+  autoSortBtn.addEventListener("click", () => { orders = {}; saveOrders(); render(); });
 
-  function act(a, id){
-    const t = tasks.find(x => x.id === id);
-    if (!t) return;
-    if (a === "del"){
-      if (confirm("이 업무를 삭제할까요?")){ tasks = tasks.filter(x => x.id !== id); save(); render(); refreshBadge(); }
-    } else if (a === "done"){
-      if (!t.done && t.repeat > 0 && t.time){
-        let total = (toMin(t.time) + t.repeat) % 1440;
-        t.time = String(Math.floor(total/60)).padStart(2,"0")+":"+String(total%60).padStart(2,"0");
-        t.fired = []; t.activeAlert = false;
-      } else {
-        t.done = !t.done; if (t.done) t.activeAlert = false;
-      }
-      save(); render(); refreshBadge();
-    } else if (a === "edit"){ openForm(t); }
-  }
-
-  /* ── 드래그 정렬 ── */
+  /* ── 드래그: 줄 안 순서 변경 + 다른 환자 줄로 이동 ── */
   board.addEventListener("dragover", e => {
     e.preventDefault();
-    const dragging = board.querySelector(".dragging");
+    const dragging = board.querySelector(".task.dragging");
     if (!dragging) return;
-    const pos = dragAfter(e.clientX, e.clientY);
-    if (!pos) board.appendChild(dragging);
-    else pos.before ? board.insertBefore(dragging, pos.el) : board.insertBefore(dragging, pos.el.nextSibling);
+    const wrap = e.target.closest(".ptasks");
+    if (!wrap) return;
+    const after = chipAfter(wrap, e.clientX, e.clientY);
+    if (after) wrap.insertBefore(dragging, after);
+    else wrap.insertBefore(dragging, wrap.querySelector(".addchip"));
   });
   board.addEventListener("drop", e => e.preventDefault());
 
-  function dragAfter(x, y){
-    const els = [...board.querySelectorAll(".card:not(.dragging)")];
+  function chipAfter(wrap, x, y){
+    const els = [...wrap.querySelectorAll(".task:not(.dragging)")];
     let best = null, bestD = Infinity, before = true;
     for (const el of els){
       const r = el.getBoundingClientRect();
@@ -371,47 +279,55 @@
       const d = Math.hypot(x-cx, y-cy);
       if (d < bestD){ bestD = d; best = el; before = (y < r.top) ? true : (y > r.bottom) ? false : (x < cx); }
     }
-    return best ? { el:best, before } : null;
+    if (!best) return null;
+    return before ? best : best.nextElementSibling && best.nextElementSibling.classList.contains("task") ? best.nextElementSibling : best.nextElementSibling;
   }
 
-  function commitOrder(){
-    manualOrder = [...board.querySelectorAll(".card")].map(el => el.dataset.id);
-    sortMode = "manual"; saveMeta(); updateAutoBtn();
-  }
-  function updateAutoBtn(){ autoSortBtn.style.display = (sortMode==="manual" && tasks.length) ? "inline-block" : "none"; }
-  autoSortBtn.addEventListener("click", () => { sortMode = "auto"; manualOrder = []; saveMeta(); render(); });
-
-  /* ── 알림 스캔 ── */
-  function scanAlarms(){
-    let changed = false;
-    for (const t of tasks){
-      if (t.done || t.bg !== "deadline" || !t.time || !t.alarms.length) continue;
-      const left = minutesLeft(t.time);
-      if (left === null) continue;
-      const due = t.alarms.filter(m => left <= m && !t.fired.includes(m));
-      if (due.length){
-        due.forEach(m => t.fired.push(m));
-        t.activeAlert = true; changed = true;
-        notify(t, Math.min(...due));
-      }
+  function commitDrag(el){
+    justDragged = true; setTimeout(() => justDragged = false, 60);
+    const wrap = el.closest(".ptasks"); if (!wrap) return;
+    const targetKey = wrap.dataset.key;
+    const t = tasks.find(x => x.id === el.dataset.id); if (!t) return;
+    const srcKey = pkey(t);
+    if (targetKey !== srcKey){                       // 다른 환자 줄로 이동 → 환자 재지정
+      t.room = wrap.dataset.room || "";
+      t.name = wrap.dataset.name || "";
+      save();
     }
-    if (changed){ save(); refreshBadge(); }
+    const ids = [...wrap.querySelectorAll(".task")].map(c => c.dataset.id);
+    orders[targetKey] = ids;
+    saveOrders(); render();
   }
 
-  function notify(t, min){
-    if (!("Notification" in window) || Notification.permission !== "granted") return;
-    const title = `⏰ ${min}분 전 · ${t.title}`;
-    const body = [[t.room, t.name].filter(Boolean).join(" "), t.content].filter(Boolean).join(" · ");
-    const opts = { body, icon:"icons/icon-192.png", badge:"icons/icon-192.png", tag:"ward-"+t.id, renotify:true, requireInteraction:true };
-    if (swReg && swReg.showNotification) swReg.showNotification(title, opts).catch(() => { try { new Notification(title, opts); } catch {} });
-    else { try { new Notification(title, opts); } catch {} }
+  /* ── 팝오버 (내용/완료/수정/삭제) ── */
+  function openPop(t, anchor){
+    pop.dataset.id = t.id;
+    pop.innerHTML = `
+      <div class="pop-content">${t.content ? esc(t.content) : "<i>내용 없음</i>"}</div>
+      <div class="pop-actions">
+        <button data-a="done">${t.done ? "↩ 되돌리기" : "✓ 완료"}</button>
+        <button data-a="edit">✎ 수정</button>
+        <button data-a="del">🗑 삭제</button>
+      </div>`;
+    pop.classList.add("open");
+    const r = anchor.getBoundingClientRect();
+    const pw = 220, ph = pop.offsetHeight;
+    let left = Math.min(r.left, window.innerWidth - pw - 8);
+    let top = r.bottom + 6; if (top + ph > window.innerHeight - 8) top = r.top - ph - 6;
+    pop.style.left = Math.max(8, left) + "px";
+    pop.style.top = Math.max(8, top) + "px";
+    pop.querySelectorAll("[data-a]").forEach(b =>
+      b.addEventListener("click", e => { e.stopPropagation(); act(b.dataset.a, t.id); closePop(); }));
   }
+  function closePop(){ pop.classList.remove("open"); }
+  document.addEventListener("click", e => { if (!pop.contains(e.target) && !e.target.classList.contains("task")) closePop(); });
 
-  function refreshBadge(){
-    const n = tasks.filter(t => t.activeAlert && !t.done).length;
-    if (navigator.setAppBadge){ n ? navigator.setAppBadge(n) : navigator.clearAppBadge?.(); }
+  function act(a, id){
+    const t = tasks.find(x => x.id === id); if (!t) return;
+    if (a === "del"){ tasks = tasks.filter(x => x.id !== id); save(); render(); }
+    else if (a === "done"){ t.done = !t.done; save(); render(); }
+    else if (a === "edit"){ openForm(t); }
   }
-  async function ensurePerm(){ if ("Notification" in window && Notification.permission === "default"){ try { await Notification.requestPermission(); } catch {} } }
 
   /* ── 폼 ── */
   function setChips(){
@@ -420,15 +336,13 @@
   }
   document.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => { sel[c.dataset.group] = c.dataset.val; setChips(); }));
 
-  function openForm(t){
+  function openForm(t, preset){
+    closePop();
     editingId = t ? t.id : null;
     $("#f-title").value = t ? t.title : "";
-    $("#f-room").value = t ? (t.room||"") : "";
-    $("#f-name").value = t ? (t.name||"") : "";
-    $("#f-time").value = t ? (t.time||"") : "";
+    $("#f-room").value = t ? (t.room||"") : (preset ? preset.room : "");
+    $("#f-name").value = t ? (t.name||"") : (preset ? preset.name : "");
     $("#f-content").value = t ? (t.content||"") : "";
-    $("#f-repeat").value = t ? String(t.repeat||0) : "0";
-    document.querySelectorAll("#alarmChips input").forEach(i => i.checked = t ? (t.alarms||[]).includes(+i.value) : true);
     sel.bg = t ? t.bg : "regular";
     sel.bd = t ? t.bd : "none";
     $("#saveBtn").textContent = t ? "수정" : "추가";
@@ -443,48 +357,23 @@
 
   form.addEventListener("submit", e => {
     e.preventDefault();
-    const alarms = [...document.querySelectorAll("#alarmChips input:checked")].map(i => +i.value);
-    const data = {
-      title: $("#f-title").value.trim(), room: $("#f-room").value.trim(), name: $("#f-name").value.trim(),
-      time: $("#f-time").value, content: $("#f-content").value.trim(),
-      repeat: parseInt($("#f-repeat").value, 10) || 0, alarms, bg: sel.bg, bd: sel.bd,
-    };
+    const data = { title:$("#f-title").value.trim(), room:$("#f-room").value.trim(), name:$("#f-name").value.trim(), content:$("#f-content").value.trim(), bg:sel.bg, bd:sel.bd };
     if (!data.title) return;
-    if (editingId){
-      const t = tasks.find(x => x.id === editingId);
-      Object.assign(t, data); t.fired = []; t.activeAlert = false;   // 수정 시 알림 재무장
-    } else {
-      tasks.push({ id: uid(), createdAt: Date.now(), done: false, fired: [], activeAlert: false, ...data });
-    }
-    if (data.bg === "deadline" && alarms.length) ensurePerm();
-    save(); render(); refreshBadge(); closeForm();
+    if (editingId){ Object.assign(tasks.find(x => x.id === editingId), data); }
+    else { tasks.push({ id:uid(), createdAt:Date.now(), done:false, ...data }); }
+    save(); render(); closeForm();
   });
 
-  /* ── 시계 · 주기 갱신 ── */
-  function tick(){
-    const n = new Date();
-    $("#clock").textContent = String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0");
-    scanAlarms(); render();
-  }
-  tick();
-  setInterval(tick, 15000);
-
-  // 최소화/백그라운드 시 제목 깜빡임
-  setInterval(() => {
-    const n = tasks.filter(t => t.activeAlert && !t.done).length;
-    if (n > 0 && document.hidden) document.title = document.title.startsWith("🔔") ? "병동 업무 리마인더" : `🔔 알림 ${n}건`;
-    else document.title = "병동 업무 리마인더";
-  }, 1000);
+  /* ── 시계 ── */
+  function tick(){ const n = new Date(); $("#clock").textContent = String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0"); }
+  tick(); setInterval(tick, 15000);
+  render();
 
   /* ── PWA ── */
-  let deferred = null;
-  const installBtn = $("#installBtn");
+  let deferred = null; const installBtn = $("#installBtn");
   window.addEventListener("beforeinstallprompt", e => { e.preventDefault(); deferred = e; installBtn.style.display = "inline-block"; });
   installBtn.addEventListener("click", async () => { if (!deferred) return; deferred.prompt(); await deferred.userChoice; deferred = null; installBtn.style.display = "none"; });
   window.addEventListener("appinstalled", () => installBtn.style.display = "none");
-
-  if ("serviceWorker" in navigator){
-    window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").then(r => swReg = r).catch(() => {}));
-  }
+  if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").then(r => swReg = r).catch(() => {}));
 })();
 </script>

@@ -1,4 +1,4 @@
-const CACHE = "ward-reminder-v2";
+const CACHE = "ward-reminder-v3";
 const ASSETS = [
   "./",
   "./index.html",
